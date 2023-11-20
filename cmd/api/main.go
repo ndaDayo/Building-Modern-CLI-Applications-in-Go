@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	metadataService "github.com/ndaDayo/Audio-Metadata-CLI/services/metadata"
 )
 
 func main() {

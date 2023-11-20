@@ -2,5 +2,5 @@ package models
 
 type Metadata struct {
 	Tags       Tags   `json:"tags"`
-	Transcript string `json:"trascript"`
+	Transcript string `json:"transcript"`
 }
