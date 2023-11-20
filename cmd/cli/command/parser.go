@@ -1,6 +1,10 @@
 package command
 
-import "github.com/ndaDayo/Audio-Metadata-CLI/internal/interfaces"
+import (
+	"fmt"
+
+	"github.com/ndaDayo/Audio-Metadata-CLI/internal/interfaces"
+)
 
 type Parser struct {
 	commands []interfaces.Command
@@ -15,4 +19,15 @@ func (p *Parser) Parse(args []string) error {
 		help()
 		return nil
 	}
+
+	subcommand := args[0]
+
+	for _, cmd := range p.commands {
+		if cmd.Name() == subcommand {
+			cmd.ParseFlags(args[1:])
+			return cmd.Run()
+		}
+	}
+
+	return fmt.Errorf("Unknown subcommand: %s", subcommand)
 }
