@@ -1,5 +1,7 @@
 package interfaces
 
+import "github.com/ndaDayo/Audio-Metadata-CLI/models"
+
 type Storage interface {
 	Upload(bytes []byte, filename string) (string, string, error)
 	SaveMetadata(audio *models.Audio) error

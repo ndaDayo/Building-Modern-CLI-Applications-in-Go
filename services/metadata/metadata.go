@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ndaDayo/Audio-Metadata-CLI/internal/interfaces"
+	"github.com/ndaDayo/Audio-Metadata-CLI/storage"
 )
 
 type MetadataService struct {
