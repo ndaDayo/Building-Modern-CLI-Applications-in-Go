@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/ndaDayo/Audio-Metadata-CLI/models"
 )
 
@@ -66,7 +67,23 @@ func (f FlatFile) SaveMetadata(audio *models.Audio) error {
 }
 
 func (f FlatFile) Upload(bytes []byte, filename string) (string, string, error) {
-	return nil
+	id := uuid.New()
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		return id.String(), "", err
+	}
+	audioDirPath := filepath.Join(dirname, "audiofile", id.String())
+
+	if err := os.MkdirAll(audioDirPath, os.ModePerm); err != nil {
+		return id.String(), "", err
+	}
+	audioFilePath := filepath.Join(dirname, filename)
+	err = os.WriteFile(audioFilePath, bytes, 0644)
+	if err != nil {
+		return id.String(), "", err
+	}
+
+	return id.String(), audioFilePath, nil
 }
 
 func (f FlatFile) List() ([]*models.Audio, error) {
