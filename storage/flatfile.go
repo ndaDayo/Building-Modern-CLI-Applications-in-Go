@@ -87,7 +87,33 @@ func (f FlatFile) Upload(bytes []byte, filename string) (string, string, error) 
 }
 
 func (f FlatFile) List() ([]*models.Audio, error) {
-	return nil
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+
+	metadataFilePath := filepath.Join(dirname, "audiofile")
+	if _, err := os.Stat(metadataFilePath); errors.Is(err, os.ErrNotExist) {
+		_ = os.Mkdir(metadataFilePath, os.ModePerm)
+	}
+	files, err := os.ReadDir(metadataFilePath)
+	if err != nil {
+		return nil, err
+	}
+
+	audioFiles := []*models.Audio{}
+	for _, file := range files {
+		if file.IsDir() {
+			name, err := f.GetByID(file.Name())
+			if err != nil {
+				return nil, err
+			}
+
+			audioFiles = append(audioFiles, name)
+		}
+	}
+
+	return audioFiles, nil
 }
 
 func (f FlatFile) Delete(id string) error {
