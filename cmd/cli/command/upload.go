@@ -48,10 +48,9 @@ func (cmd *UploadCommand) Run() error {
 	}
 
 	fmt.Println("Uploading", cmd.filename, "...")
-	url := "http://localhost/upload"
+	url := "http://localhost:8000/upload"
 	payload := &bytes.Buffer{}
 	multipartWriter := multipart.NewWriter(payload)
-
 	file, err := os.Open(cmd.filename)
 	if err != nil {
 		return err
