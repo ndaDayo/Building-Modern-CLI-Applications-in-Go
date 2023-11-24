@@ -3,6 +3,8 @@ package storage
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -35,7 +37,32 @@ func (f FlatFile) GetByID(id string) (*models.Audio, error) {
 }
 
 func (f FlatFile) SaveMetadata(audio *models.Audio) error {
-	return nil
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	audioDirPath := filepath.Join(dirname, "audiofile", audio.Id)
+	metadataFilePath := filepath.Join(audioDirPath, "metadata.json")
+	file, err := os.Create(metadataFilePath)
+
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+	data, err := audio.JSON()
+	if err != nil {
+		fmt.Println("Err: ", err)
+		return err
+	}
+
+	_, err = io.WriteString(file, data)
+	if err != nil {
+		return err
+	}
+
+	return file.Sync()
 }
 
 func (f FlatFile) Upload(bytes []byte, filename string) (string, string, error) {
