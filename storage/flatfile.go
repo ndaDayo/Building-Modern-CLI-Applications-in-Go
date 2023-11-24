@@ -117,5 +117,6 @@ func (f FlatFile) List() ([]*models.Audio, error) {
 }
 
 func (f FlatFile) Delete(id string) error {
+	fmt.Println("Deleting")
 	return nil
 }
