@@ -10,7 +10,7 @@ type Audio struct {
 	Path     string   `json:"Path"`
 	Metadata Metadata `json:"Metadata"`
 	Status   string   `json:"Status"`
-	Error    []error  `json:"Error"`
+	Error    []string `json:"Error"`
 }
 
 func (a *Audio) JSON() (string, error) {

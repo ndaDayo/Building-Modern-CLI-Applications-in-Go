@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ndaDayo/Audio-Metadata-CLI/extractors/tags"
 	"github.com/ndaDayo/Audio-Metadata-CLI/models"
 )
 
@@ -59,10 +60,32 @@ func (m *MetadataService) uploadHandler(res http.ResponseWriter, req *http.Reque
 	audio.Status = "Initiating"
 	io.WriteString(res, id)
 
-    go func(){
-        var errors []string
+	go func() {
+		var errors []string
 
-        audio.Status = "Complete"
-        err = tags.Extract(audio)
-    }
+		audio.Status = "Complete"
+		err = tags.Extract(audio)
+		if err != nil {
+			fmt.Println("error extracting tags metadata: ", err)
+			errors = append(errors, err.Error())
+		}
+
+		audio.Error = errors
+		err = m.Storage.SaveMetadata(audio)
+
+		if err != nil {
+			fmt.Println("error saving metadata: ", err)
+			errors = append(errors, err.Error())
+		}
+
+		if len(errors) > 0 {
+			fmt.Println("errors occurred extracting metadata: ")
+			for i := 0; i < len(errors); i++ {
+				fmt.Println("\terror[%d]: %s\n", i, errors[i])
+			}
+			return
+		}
+
+		fmt.Println("successfully extracted and saved audio metadata: ", audio)
+	}()
 }
