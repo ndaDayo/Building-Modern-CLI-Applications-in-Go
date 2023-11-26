@@ -11,7 +11,7 @@ func (m *MetadataService) getByIDHandler(res http.ResponseWriter, req *http.Requ
 	value, ok := req.URL.Query()["id"]
 	if !ok || len(value[0]) < 1 {
 		fmt.Println("Url Param 'id' is missing")
-		res.WriteHeader(http.StatusInternalServerError)
+		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
