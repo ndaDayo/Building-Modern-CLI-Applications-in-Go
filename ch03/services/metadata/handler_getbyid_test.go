@@ -1,9 +1,12 @@
 package metadata
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/ndaDayo/Audio-Metadata-CLI/models"
 )
 
 func TestGetByIDHandler(t *testing.T) {
@@ -18,6 +21,16 @@ func TestGetByIDHandler(t *testing.T) {
 			url:        "/",
 			setupMock:  func(ms *MockStorage) {},
 			wantStatus: http.StatusInternalServerError,
+		},
+		{
+			name: "Not Found Error",
+			url:  "/?id=non-existent-id",
+			setupMock: func(ms *MockStorage) {
+				ms.GetByIDFunc = func(id string) (*models.Audio, error) {
+					return nil, errors.New("not found")
+				}
+			},
+			wantStatus: http.StatusNotFound,
 		},
 	}
 
