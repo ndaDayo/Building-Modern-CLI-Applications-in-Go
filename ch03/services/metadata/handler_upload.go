@@ -81,7 +81,7 @@ func (m *MetadataService) uploadHandler(res http.ResponseWriter, req *http.Reque
 		if len(errors) > 0 {
 			fmt.Println("errors occurred extracting metadata: ")
 			for i := 0; i < len(errors); i++ {
-				fmt.Println("\terror[%d]: %s\n", i, errors[i])
+				fmt.Printf("\terror[%d]: %s\n", i, errors[i])
 			}
 			return
 		}
