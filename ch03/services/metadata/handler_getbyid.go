@@ -1,10 +1,12 @@
 package metadata
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
+
+	"github.com/ndaDayo/Audio-Metadata-CLI/storage"
 )
 
 func (m *MetadataService) getByIDHandler(res http.ResponseWriter, req *http.Request) {
@@ -20,7 +22,7 @@ func (m *MetadataService) getByIDHandler(res http.ResponseWriter, req *http.Requ
 
 	audio, err := m.Storage.GetByID(id)
 	if err != nil {
-		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "no such file or directory") {
+		if errors.Is(err, storage.ErrNotFound) {
 			res.WriteHeader(http.StatusNotFound)
 			return
 		}

@@ -16,6 +16,8 @@ type FlatFile struct {
 	Name string
 }
 
+var ErrNotFound = errors.New("resource not found")
+
 func (f FlatFile) GetByID(id string) (*models.Audio, error) {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
@@ -24,7 +26,7 @@ func (f FlatFile) GetByID(id string) (*models.Audio, error) {
 
 	metadataFilePath := filepath.Join(dirname, "audiofile", id, "metadata.json")
 	if _, err := os.Stat(metadataFilePath); errors.Is(err, os.ErrNotExist) {
-		_ = os.Mkdir(metadataFilePath, os.ModePerm)
+		return nil, ErrNotFound
 	}
 
 	file, err := os.ReadFile(metadataFilePath)
