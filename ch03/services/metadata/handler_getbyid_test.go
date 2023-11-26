@@ -32,6 +32,23 @@ func TestGetByIDHandler(t *testing.T) {
 			},
 			wantStatus: http.StatusNotFound,
 		},
+		{
+			name: "Successful Request",
+			url:  "/?id=valid-id",
+			setupMock: func(ms *MockStorage) {
+				ms.GetByIDFunc = func(id string) (*models.Audio, error) {
+					return &models.Audio{
+						Id:       "valid-id",
+						Path:     "path/to/audio",
+						Metadata: models.Metadata{},
+						Status:   "Available",
+						Error:    nil,
+					}, nil
+
+				}
+			},
+			wantStatus: http.StatusOK,
+		},
 	}
 
 	for _, tt := range tests {

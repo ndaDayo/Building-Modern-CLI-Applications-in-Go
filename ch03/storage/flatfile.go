@@ -35,7 +35,7 @@ func (f FlatFile) GetByID(id string) (*models.Audio, error) {
 	}
 	data := models.Audio{}
 
-	err = json.Unmarshal([]byte(file), &data)
+	err = json.Unmarshal(file, &data)
 	return &data, err
 }
 
