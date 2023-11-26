@@ -7,8 +7,9 @@ import (
 )
 
 type MockStorage struct {
-	GetByIDFunc func(id string) (*models.Audio, error)
-	UploadFunc  func(bytes []byte, filename string) (string, string, error)
+	GetByIDFunc      func(id string) (*models.Audio, error)
+	UploadFunc       func(bytes []byte, filename string) (string, string, error)
+	SaveMetadataFunc func(audio *models.Audio) error
 }
 
 func (m *MockStorage) GetByID(id string) (*models.Audio, error) {
@@ -26,6 +27,9 @@ func (m *MockStorage) Upload(bytes []byte, filename string) (string, string, err
 }
 
 func (m *MockStorage) SaveMetadata(audio *models.Audio) error {
+	if m.SaveMetadataFunc != nil {
+		return m.SaveMetadataFunc(audio)
+	}
 	return errors.New("SaveMetadata not implemented")
 }
 

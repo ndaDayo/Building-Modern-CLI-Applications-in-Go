@@ -3,9 +3,8 @@ package metadata
 import (
 	"bytes"
 	"net/http"
+	"net/http/httptest"
 	"testing"
-
-	"github.com/ndaDayo/Audio-Metadata-CLI/models"
 )
 
 func TestUploadHandler(t *testing.T) {
@@ -16,17 +15,31 @@ func TestUploadHandler(t *testing.T) {
 		body       *bytes.Buffer
 	}{
 		{
-			name: "Successful Upload",
-			setupMock: func(ms *MockStorage) {
-				ms.UploadFunc = func(data []byte, filename string) (string, string, error) {
-					return "id123", "/path/to/audio", nil
-				}
-				ms.SaveMetadataFunc = func(audio *models.Audio) error {
-					return nil
-				}
-			},
-			wantStatus: http.StatusOK,
-			body:       bytes.NewBufferString("test file content"),
+			name:       "No file provided",
+			setupMock:  func(ms *MockStorage) {},
+			wantStatus: http.StatusInternalServerError,
+			body:       bytes.NewBuffer(nil),
 		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockStorage := &MockStorage{}
+			tt.setupMock(mockStorage)
+			service := &MetadataService{Storage: mockStorage}
+			req, err := http.NewRequest(http.MethodPost, "/upload", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler := http.HandlerFunc(service.uploadHandler)
+			handler.ServeHTTP(rr, req)
+			if status := rr.Code; status != tt.wantStatus {
+				t.Errorf("handler return wrong status code: got %v want %v", status, tt.wantStatus)
+			}
+		})
+
 	}
 }
