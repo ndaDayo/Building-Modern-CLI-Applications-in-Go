@@ -17,7 +17,7 @@ func (m *MetadataService) uploadHandler(res http.ResponseWriter, req *http.Reque
 
 	if err != nil {
 		fmt.Println("error creating formfile: ", err)
-		res.WriteHeader(http.StatusInternalServerError)
+		res.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

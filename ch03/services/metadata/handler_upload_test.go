@@ -17,7 +17,7 @@ func TestUploadHandler(t *testing.T) {
 		{
 			name:       "No file provided",
 			setupMock:  func(ms *MockStorage) {},
-			wantStatus: http.StatusInternalServerError,
+			wantStatus: http.StatusBadRequest,
 			body:       bytes.NewBuffer(nil),
 		},
 	}
