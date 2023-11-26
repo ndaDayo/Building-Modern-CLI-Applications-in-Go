@@ -8,6 +8,7 @@ import (
 
 type MockStorage struct {
 	GetByIDFunc func(id string) (*models.Audio, error)
+	UploadFunc  func(bytes []byte, filename string) (string, string, error)
 }
 
 func (m *MockStorage) GetByID(id string) (*models.Audio, error) {
@@ -18,6 +19,9 @@ func (m *MockStorage) GetByID(id string) (*models.Audio, error) {
 }
 
 func (m *MockStorage) Upload(bytes []byte, filename string) (string, string, error) {
+	if m.UploadFunc != nil {
+		return m.UploadFunc(bytes, filename)
+	}
 	return "", "", errors.New("Upload not implemented")
 }
 
