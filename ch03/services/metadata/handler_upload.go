@@ -63,7 +63,6 @@ func (m *MetadataService) uploadHandler(res http.ResponseWriter, req *http.Reque
 	go func() {
 		var errors []string
 
-		audio.Status = "Complete"
 		err = tags.Extract(audio)
 		if err != nil {
 			fmt.Println("error extracting tags metadata: ", err)
