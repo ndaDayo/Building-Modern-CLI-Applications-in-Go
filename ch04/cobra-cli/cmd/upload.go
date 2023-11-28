@@ -5,7 +5,9 @@ package cmd
 
 import "github.com/spf13/cobra"
 
-// uploadCmd represents the upload command
+var (
+	Filename string
+)
 
 var uploadCmd = &cobra.Command{
 	Use:   "upload [audio|video] [-f|--filename]<filename>",
@@ -21,5 +23,7 @@ var uploadCmd = &cobra.Command{
 }
 
 func init() {
+	uploadCmd.PersistentFlags().StringVarP(&Filename, "filename", "f", "", "file to upload")
+	uploadCmd.MarkPersistentFlagRequired("filename")
 	rootCmd.AddCommand(uploadCmd)
 }
