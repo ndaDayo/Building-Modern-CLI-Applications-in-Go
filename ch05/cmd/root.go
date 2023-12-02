@@ -20,8 +20,7 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	SetupStopHandler()
-	SetupInterruptHandler()
+	SetupSignalHandler()
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -32,23 +31,18 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func SetupInterruptHandler() {
+func SetupSignalHandler() {
 	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, syscall.SIGINT)
+	signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTSTP)
 	go func() {
-		<-c
-		fmt.Println("\r- Wakeup! Sleep has been interrupted")
-		os.Exit(0)
-	}()
-}
-
-func SetupStopHandler() {
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, syscall.SIGTSTP)
-
-	go func() {
-		<-c
-		fmt.Println("\r- Wakeup stop sleep")
-		os.Exit(0)
+		sig := <-c
+		switch sig {
+		case os.Interrupt, syscall.SIGINT:
+			fmt.Println("\r- Wakeup! Sleep has been interrupted")
+			os.Exit(0)
+		case os.Interrupt, syscall.SIGTSTP:
+			fmt.Println("\r- Wakeup stop sleep")
+			os.Exit(0)
+		}
 	}()
 }
