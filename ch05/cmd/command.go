@@ -22,5 +22,7 @@ var commandCmd = &cobra.Command{
 }
 
 func init() {
+	commandCmd.Flags().String("localFlag", "", "a local string flag")
+	commandCmd.PersistentFlags().Bool("persistentFlag", false, "a PersistentFlag bool flag")
 	rootCmd.AddCommand(commandCmd)
 }
